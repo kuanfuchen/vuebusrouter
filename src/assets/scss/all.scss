@@ -1,0 +1,61 @@
+@import './reset.scss';
+
+.gradualBg {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: linear-gradient(#200337, #333d71d1 82%, #443b68);
+
+}
+
+.highwayBusBg {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: linear-gradient(#3a067d, #a54f20d1 82%, #514389);
+}
+
+.indexText {
+  line-height: 1.5;
+  letter-spacing: 1.5px;
+  margin-bottom: 45px;
+}
+
+.btn-special {
+  background: #C0A7C4;
+  color: #fff;
+  border-radius: 25px;
+  // background-size: contain;
+}
+
+.textlocation {
+  padding-top: 3px;
+  margin-right: 20px;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  // vertical-align: middle;
+}
+
+.btnGap-special {
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-position: center;
+  // font-size: 14px;
+  // font-weight: 700;
+  // text-align: left;
+  // align-content: center;
+  // align-items: center;
+  // margin-top: 10px;
+  // height: 42px;
+}
+
+.btnText-special {}
