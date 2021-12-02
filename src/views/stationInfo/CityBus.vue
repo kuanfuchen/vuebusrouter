@@ -6,12 +6,54 @@
       <div class="searchBusNum card">
         <div class="searchBusNumDiv">
           <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
-          <input
-            type="text"
-            class="searchBusNumInput form-control"
-            placeholder="請輸入公車路線編號"
-            v-model="busNumber"
-          />
+          <!--  -->
+          <div class="searchRouterTabs mb-1">
+            <div class="container row">
+              <div
+                class="col-6 bgTab ellipsis"
+                :class="{ searchActive: activeSearch === 'all' }"
+                @click="activeSearch = 'all'"
+              >
+                全台搜索
+              </div>
+              <div
+                class="col-6 bgTab ellipsis"
+                :class="{ searchActive: activeSearch === 'city' }"
+                @click="activeSearch = 'city'"
+              >
+                縣市搜索
+              </div>
+            </div>
+          </div>
+          <!--  -->
+          <div v-if="activeSearch === 'all'">
+            <input
+              type="text"
+              class="searchBusNumInput mt-1"
+              placeholder="請輸入公車路線編號"
+              v-model="busNumber"
+            />
+          </div>
+          <div v-if="activeSearch === 'city'">
+            <select
+              class="form-select-sm searchCityBusNumInput"
+              aria-label=".form-select-sm example"
+              v-model="selectSingleCity"
+            >
+              <option
+                v-for="(city, index) in cityName.Taiwan"
+                :key="index"
+                :label="city.name"
+                :value="city.value"
+              ></option>
+            </select>
+            <input
+              type="text"
+              placeholder="請輸入公車編號"
+              v-model.number="singlecityBusNum"
+              class="searchCityBusNumInput form-control-sm"
+            />
+          </div>
           <div class="card searchIncluidInfo px-3">
             <div
               class="card px-1 searchCardInfo"
@@ -27,13 +69,17 @@
                 )
               "
             >
-              <p class="text-start" style="font-size: 18px">{{ busNo.no }}</p>
-              <div
-                class="d-flex mt-3 justify-content-between ellipsis"
-                style="font-size: 12px"
-              >
-                <p>{{ busNo.startStation }}-{{ busNo.endStation }}</p>
-                <p>{{ busNo.city }}</p>
+              <div class="searchPosition">
+                <p class="text-start" style="font-size: 18px">{{ busNo.no }}</p>
+
+                <div class="d-flex ellipsis" style="font-size: 12px">
+                  <p class="searchPositionTextRange ellipsis">
+                    {{ busNo.startStation }}-{{ busNo.endStation }}
+                  </p>
+                  <p class="searchPositionTextCity ellipsis">
+                    {{ busNo.city }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -214,6 +260,7 @@ export default {
   data() {
     return {
       cityBusTabIf: false,
+      activeSearch: "all",
       selectCity: "",
       activeLine: "",
       cityName: cityName,
@@ -223,6 +270,7 @@ export default {
       startStopNameZh: "",
       endStopNameZh: "",
       cityBusLine: [],
+      singleCityBusData: [],
       selectRouteCity: "",
       cityBusStopName: [],
       moveBusData: [],
@@ -233,6 +281,7 @@ export default {
         width: "100vw",
         height: "100vh",
         zIndex: "2",
+
         backgroundSize: "cover",
         backgroundImage: `url(${require("@/assets/busImg/background.png")})`,
         // backgroundRepeat: "no-repeat",
@@ -260,6 +309,8 @@ export default {
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
         black: `${require("@/assets/busImg/BusSign.png")}`,
       },
+      selectSingleCity: "",
+      singlecityBusNum: "",
     };
   },
   methods: {
@@ -304,6 +355,42 @@ export default {
             city: city,
             cityEn: cityEn,
           });
+        }
+      });
+    },
+    singleCityFn() {
+      if (this.selectSingleCity === "") {
+        return;
+      }
+      if (this.singlecityBusNum === "") {
+        return;
+      }
+      this.singleCityBusData = [];
+      this.axios({
+        method: "get",
+        url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${this.selectSingleCity}`,
+        headers: this.getAuthorizationHeader(),
+      }).then((response) => {
+        const line = response.data;
+        let city;
+        let cityEn;
+        for (let i = 0; line.length > i; i++) {
+          this.cityName.Taiwan.filter((item) => {
+            const cityIndex = item.value.indexOf(line[i].City);
+            if (cityIndex !== -1 && item.value.length === line[i].City.length) {
+              city = item.name;
+              cityEn = item.value;
+            }
+          });
+          this.singleCityBusData.unshift({
+            no: line[i].RouteName.Zh_tw,
+            startStation: line[i].DepartureStopNameZh,
+            endStation: line[i].DestinationStopNameZh,
+            RouteUID: line[i].RouteUID,
+            city: city,
+            cityEn: cityEn,
+          });
+          // this.routeInfoFn();
         }
       });
     },
@@ -377,7 +464,15 @@ export default {
         }
       }
     },
-    decreaseBusNum() {},
+    decreaseBusNum() {
+      const splitBusNum = this.busNumber.split("");
+      let strNum = "";
+      splitBusNum.splice(splitBusNum.length - 1, 1);
+      for (let i = 0; splitBusNum.length > i; i++) {
+        strNum += splitBusNum[i];
+      }
+      this.busNumber = strNum;
+    },
   },
   watch: {
     busNumber(val) {
@@ -387,6 +482,16 @@ export default {
       if (val.length === 0) {
         this.searchBusNo = [];
       }
+    },
+    singlecityBusNum(val) {
+      console.log(val);
+      if (val.length > 1) {
+        this.singleCityFn();
+      }
+    },
+    selectSingleCity(val) {
+      console.log(val);
+      this.singleCityFn();
     },
   },
   mounted() {
@@ -401,23 +506,15 @@ export default {
     // });
     const TaiwanVal = this.cityName.Taiwan;
     const vm = this;
+    if (this.cityBusLine.length > 0) {
+      return;
+    }
     return new Promise((resolve) => {
       resolve();
       for (let i = 0; TaiwanVal.length > i; i++) {
         vm.selectCity = TaiwanVal[i].value;
         vm.cityInfoFn();
       }
-    }).then(() => {
-      setTimeout(() => {
-        // console.log(vm.cityBusLine);
-        // vm.selectRouteCity = "Taipei";
-        // vm.selectRoutLine = vm.cityBusLine[0].no;
-        // vm.startStopNameZh = vm.cityBusLine[0].startStation;
-        // vm.endStopNameZh = vm.cityBusLine[0].endStation;
-        // vm.activeLine = vm.cityBusLine[0].endStation;
-        // vm.routeInfoFn();
-        // console.log(vm.selectRoutLine);
-      }, 500);
     });
   },
 };
@@ -432,41 +529,75 @@ export default {
   margin-left: -300px;
 }
 .searchBusNum {
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: 24px;
   margin-right: 24px;
   width: 23.5%;
-  height: 74vh;
-
-  // border-radius: 10px;
+  height: 76vh;
   background: #161933 81%;
 
   .searchBusNumDiv {
     margin-top: 12px;
     margin-left: 20px;
     margin-right: 20px;
-
+    cursor: pointer;
+    .searchActive {
+      padding-bottom: 12px;
+      color: #fff !important;
+      border-bottom: 3px solid #fff;
+    }
     .searchBusNumInput {
+      width: 100%;
       border: 3px solid #c0a7c4;
       border-radius: 25px;
+      padding-left: 10px;
+      padding-right: 10px;
       background: #161933 81%;
       color: #fff;
       margin-bottom: 12px;
     }
-
+    .searchCityBusNumInput {
+      width: 50%;
+      border: 3px solid #c0a7c4;
+      border-radius: 25px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background: #161933 81%;
+      color: #fff;
+      margin-bottom: 12px;
+    }
     .searchIncluidInfo {
       background: rgba(102, 86, 130, 0.47);
       height: calc(74vh - 216px - 12px - 51px);
       margin-bottom: 18px;
       overflow-y: auto;
-
+      overflow-x: hidden;
       .searchCardInfo {
         border: 3px solid #c0a7c4;
-        height: 65px;
+        //
         margin-top: 10px;
         background: rgba(102, 86, 130, 0.47);
         color: #c0a7c4;
         cursor: pointer;
+      }
+      .searchPosition {
+        height: 60px;
+        position: relative;
+      }
+      // .searchPositionText {
+      //   position: absolute;
+      //   bottom: 0;
+      //   position: relative;
+      // }
+      .searchPositionTextRange {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      .searchPositionTextCity {
+        position: absolute;
+        bottom: 0;
+        right: 0;
       }
     }
     .btnAll {
@@ -478,7 +609,8 @@ export default {
       background: #161933 81%;
       font-weight: 600;
       border-radius: 5px;
-      width: 50px;
+      width: 18%;
+      // width: 50px;
       height: 34px;
       &:hover {
         color: #161933;

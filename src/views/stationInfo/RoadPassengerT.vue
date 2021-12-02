@@ -366,7 +366,15 @@ export default {
         }
       }
     },
-    decreaseBusNum() {},
+    decreaseBusNum() {
+      const splitBusNum = this.busNumber.split("");
+      let strNum = "";
+      splitBusNum.splice(splitBusNum.length - 1, 1);
+      for (let i = 0; splitBusNum.length > i; i++) {
+        strNum += splitBusNum[i];
+      }
+      this.busNumber = strNum;
+    },
   },
   watch: {
     busNumber(val) {
@@ -453,7 +461,7 @@ export default {
       background: #161933 81%;
       font-weight: 600;
       border-radius: 5px;
-      width: 50px;
+      width: 18%;
       height: 34px;
       &:hover {
         color: #161933;
