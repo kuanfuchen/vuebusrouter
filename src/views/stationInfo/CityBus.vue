@@ -12,14 +12,14 @@
               <div
                 class="col-6 bgTab ellipsis"
                 :class="{ searchActive: activeSearch === 'all' }"
-                @click="activeSearch = 'all'"
+                @click="searchTaiwanFn()"
               >
                 全台搜索
               </div>
               <div
                 class="col-6 bgTab ellipsis"
                 :class="{ searchActive: activeSearch === 'city' }"
-                @click="activeSearch = 'city'"
+                @click="citySearchFn()"
               >
                 縣市搜索
               </div>
@@ -40,6 +40,7 @@
               aria-label=".form-select-sm example"
               v-model="selectSingleCity"
             >
+              <option disabled label="請選擇">請選擇</option>
               <option
                 v-for="(city, index) in cityName.Taiwan"
                 :key="index"
@@ -50,7 +51,7 @@
             <input
               type="text"
               placeholder="請輸入公車編號"
-              v-model.number="singlecityBusNum"
+              v-model="singlecityBusNum"
               class="searchCityBusNumInput form-control-sm"
             />
           </div>
@@ -309,7 +310,7 @@ export default {
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
         black: `${require("@/assets/busImg/BusSign.png")}`,
       },
-      selectSingleCity: "",
+      selectSingleCity: "請選擇",
       singlecityBusNum: "",
     };
   },
@@ -362,9 +363,6 @@ export default {
       if (this.selectSingleCity === "") {
         return;
       }
-      if (this.singlecityBusNum === "") {
-        return;
-      }
       this.singleCityBusData = [];
       this.axios({
         method: "get",
@@ -390,8 +388,11 @@ export default {
             city: city,
             cityEn: cityEn,
           });
-          // this.routeInfoFn();
+          if (this.singlecityBusNum !== "") {
+            this.searchsinglecityBusRouter();
+          }
         }
+        // console.log(this.singleCityBusData);
       });
     },
     routeInfoFn(dirction = 0, BusNo, startStop, endStop, cityVal) {
@@ -402,6 +403,7 @@ export default {
         this.activeLine = endStop;
         this.selectRouteCity = cityVal;
       }
+      console.log(this.selectRouteCity);
       this.cityBusTabIf = true;
       this.cityBusStopName = [];
       this.directionRouter = dirction;
@@ -412,6 +414,7 @@ export default {
         headers: this.getAuthorizationHeader(),
       }).then((response) => {
         const stopNameInfo = response.data;
+        console.log(stopNameInfo);
         for (let i = 0; stopNameInfo[dirction].Stops.length > i; i++) {
           this.cityBusStopName.push({
             busName: stopNameInfo[dirction].RouteName.Zh_tw,
@@ -455,6 +458,18 @@ export default {
         }
       });
     },
+    searchTaiwanFn() {
+      this.activeSearch = "all";
+      this.singlecityBusNum = "";
+      this.searchBusNo = [];
+
+      // this.selectSingleCity = "";
+    },
+    citySearchFn() {
+      this.activeSearch = "city";
+      this.busNumber = "";
+      this.searchBusNo = [];
+    },
     searchBusRouter(val) {
       this.searchBusNo = [];
       for (let i = 0; this.cityBusLine.length > i; i++) {
@@ -464,14 +479,36 @@ export default {
         }
       }
     },
-    decreaseBusNum() {
-      const splitBusNum = this.busNumber.split("");
-      let strNum = "";
-      splitBusNum.splice(splitBusNum.length - 1, 1);
-      for (let i = 0; splitBusNum.length > i; i++) {
-        strNum += splitBusNum[i];
+    searchsinglecityBusRouter() {
+      this.searchBusNo = [];
+      console.log(this.singlecityBusNum);
+      for (let i = 0; this.singleCityBusData.length > i; i++) {
+        const singlecityLine = this.singleCityBusData[i].no.indexOf(
+          this.singlecityBusNum
+        );
+        if (singlecityLine !== -1) {
+          this.searchBusNo.push(this.singleCityBusData[i]);
+        }
       }
-      this.busNumber = strNum;
+    },
+    decreaseBusNum() {
+      if (this.activeSearch === "all") {
+        const splitBusNum = this.busNumber.split("");
+        let strNum = "";
+        splitBusNum.splice(splitBusNum.length - 1, 1);
+        for (let i = 0; splitBusNum.length > i; i++) {
+          strNum += splitBusNum[i];
+        }
+        this.busNumber = strNum;
+      } else if (this.activeSearch === "city") {
+        const splitBusNum = this.singlecityBusNum.split("");
+        let strNum = "";
+        splitBusNum.splice(splitBusNum.length - 1, 1);
+        for (let i = 0; splitBusNum.length > i; i++) {
+          strNum += splitBusNum[i];
+        }
+        this.singlecityBusNum = strNum;
+      }
     },
   },
   watch: {
@@ -484,13 +521,13 @@ export default {
       }
     },
     singlecityBusNum(val) {
-      console.log(val);
-      if (val.length > 1) {
-        this.singleCityFn();
+      if (val.length === 0) {
+        this.searchBusNo = [];
+        return;
       }
+      this.searchsinglecityBusRouter();
     },
     selectSingleCity(val) {
-      console.log(val);
       this.singleCityFn();
     },
   },
