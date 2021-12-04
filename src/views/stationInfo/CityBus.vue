@@ -88,23 +88,23 @@
             <div class="d-flex justify-content-around">
               <button class="btnSearch">紅</button>
               <button class="btnSearch">藍</button>
-              <button class="btnSearch" @click="busNumber += 1">1</button>
-              <button class="btnSearch" @click="busNumber += 2">2</button>
-              <button class="btnSearch" @click="busNumber += 3">3</button>
+              <button class="btnSearch" @click="keyNumFn('1')">1</button>
+              <button class="btnSearch" @click="keyNumFn('2')">2</button>
+              <button class="btnSearch" @click="keyNumFn('3')">3</button>
             </div>
             <div class="d-flex justify-content-around mt-2">
-              <button class="btnSearch" @click="busNumber += 綠">綠</button>
-              <button class="btnSearch" @click="busNumber += 棕">棕</button>
-              <button class="btnSearch" @click="busNumber += 4">4</button>
-              <button class="btnSearch" @click="busNumber += 5">5</button>
-              <button class="btnSearch" @click="busNumber += 6">6</button>
+              <button class="btnSearch" @click="keyNumFn('綠')">綠</button>
+              <button class="btnSearch" @click="keyNumFn('棕')">棕</button>
+              <button class="btnSearch" @click="keyNumFn('4')">4</button>
+              <button class="btnSearch" @click="keyNumFn('5')">5</button>
+              <button class="btnSearch" @click="keyNumFn('6')">6</button>
             </div>
             <div class="d-flex justify-content-around mt-2">
-              <button class="btnSearch" @click="busNumber += 橘">橘</button>
-              <button class="btnSearch" @click="busNumber += 黃">黃</button>
-              <button class="btnSearch" @click="busNumber += 7">7</button>
-              <button class="btnSearch" @click="busNumber += 8">8</button>
-              <button class="btnSearch" @click="busNumber += 9">9</button>
+              <button class="btnSearch" @click="keyNumFn('橘')">橘</button>
+              <button class="btnSearch" @click="keyNumFn('黃')">黃</button>
+              <button class="btnSearch" @click="keyNumFn('7')">7</button>
+              <button class="btnSearch" @click="keyNumFn('8')">8</button>
+              <button class="btnSearch" @click="keyNumFn('9')">9</button>
             </div>
             <div class="d-flex justify-content-around mt-2">
               <button class="btnSearch btnSearchRegular">更多</button>
@@ -113,6 +113,7 @@
                 class="btnSearch btnSearchRegular"
                 @click="
                   busNumber = '';
+                  selectSingleCity = '';
                   searchBusNo = [];
                 "
               >
@@ -508,6 +509,13 @@ export default {
           strNum += splitBusNum[i];
         }
         this.singlecityBusNum = strNum;
+      }
+    },
+    keyNumFn(num) {
+      if (this.activeSearch === "all") {
+        this.busNumber += num;
+      } else if (this.activeSearch === "city") {
+        this.singlecityBusNum += num;
       }
     },
   },
