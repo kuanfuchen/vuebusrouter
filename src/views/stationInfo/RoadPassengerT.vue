@@ -1,20 +1,20 @@
 <template>
-  <div class="highwayBusBg">
+  <div class="gradualBg">
     <NavHeader />
     <!--  -->
-    <div class="d-flex" :style="homeBg">
-      <div class="searchBusNum card">
-        <div class="searchBusNumDiv">
+    <div class="row" :style="homeBg">
+      <div class="searchBusNum card col-6 col-md-3">
+        <div class="searchhighwaybusDiv">
           <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
           <input
             type="text"
-            class="searchBusNumInput form-control"
+            class="searchhighwaybusInput form-control"
             placeholder="請輸入公車路線編號"
             v-model="busNumber"
           />
-          <div class="card searchIncluidInfo px-3">
+          <div class="card searchHighwayBusIncludInfo px-0">
             <div
-              class="card px-1 searchCardInfo"
+              class="card px-1 searchCardHighbusInfo"
               v-for="(busNo, key) in searchBusNo"
               :key="key"
               @click="
@@ -72,19 +72,19 @@
             </div>
           </div>
         </div>
+        <div class="roadImgHalfStyle">
+          <img
+            src="../../assets/busImg/road.png"
+            style="width: 65%; z-index: 5; opacity: 0.8"
+          />
+        </div>
       </div>
-      <div class="busImgHalfStyle">
-        <!-- <div :style="busImgHalf"></div> -->
-        <img
-          src="../../assets/busImg/road.png"
-          style="width: 50%; z-index: 5; opacity: 0.8"
-        />
-      </div>
-      <div class="searchRouter">
+      <div class="searchRouter col-6 col-md-3">
         <div class="searchRouterTabs">
           <div class="container row" v-if="busRouterNumIf">
             <div
-              class="col-6 bgTab mt-2 ellipsis"
+              style="font-size: 14px"
+              class="col-6 bgTab pt-2 ellipsis"
               :class="{
                 activeSearchTab:
                   activeLine === endStopNameZh && activeLine !== '',
@@ -98,7 +98,8 @@
               往{{ endStopNameZh }}
             </div>
             <div
-              class="col-6 mt-2 bgTab ellipsis"
+              style="font-size: 14px"
+              class="col-6 pt-2 bgTab ellipsis"
               :class="{
                 activeSearchTab:
                   activeLine === startStopNameZh && activeLine !== '',
@@ -138,7 +139,7 @@
                     align-items-center
                   "
                 >
-                  <span>公路公車</span>
+                  <span>公車</span>
                 </div>
                 <div
                   class="
@@ -169,7 +170,7 @@
           </div>
         </div>
       </div>
-      <div class="mapCube">
+      <div class="mapCube col-md-6 col-12 px-0">
         <l-map
           ref="myMap"
           :zoom="zoom"
@@ -235,12 +236,12 @@ export default {
         backgroundImage: `url(${require("@/assets/busImg/background.png")})`,
         // backgroundRepeat: "no-repeat",
       },
-      busImgHalf: {
-        backgroundImage: `url(${require("@/assets/busImg/bus.png")})`,
-        backgroundRepeat: "no-repeat",
-        width: "100%",
-        height: "100%",
-      },
+      // busImgHalf: {
+      //   backgroundImage: `url(${require("@/assets/busImg/bus.png")})`,
+      //   backgroundRepeat: "no-repeat",
+      //   width: "100%",
+      //   height: "100%",
+      // },
       zoom: "15",
       localCenter: [25.0375417, 121.5644327],
       mapOptions: {
@@ -401,35 +402,23 @@ export default {
 };
 </script>
 <style lang="scss">
-.gradualBg {
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-.busImgHalfStyle {
+@import "@/assets/scss/citybus.scss";
+.roadImgHalfStyle {
   position: absolute;
-  bottom: 0;
-  left: -100px;
+  bottom: -120px;
+  left: -50px;
   z-index: 5;
-  // margin-top: -100px;
-  // margin-left: -300px;
 }
 .searchBusNum {
-  margin-top: 20px;
-  margin-left: 24px;
-  margin-right: 24px;
-  width: 23.5%;
-  height: 74vh;
-
-  // border-radius: 10px;
-  background: #161933 81%;
-
-  .searchBusNumDiv {
+  .searchhighwaybusDiv {
     margin-top: 12px;
-    margin-left: 20px;
-    margin-right: 20px;
+    // margin-left: 20px;
+    // margin-right: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
     z-index: 50;
     opacity: 0.8;
-    .searchBusNumInput {
+    .searchhighwaybusInput {
       border: 3px solid #c0a7c4;
       border-radius: 25px;
       background: #161933 81%;
@@ -437,13 +426,13 @@ export default {
       margin-bottom: 12px;
     }
 
-    .searchIncluidInfo {
+    .searchHighwayBusIncludInfo {
       background: rgba(102, 86, 130, 0.47);
       height: calc(74vh - 216px - 12px - 51px);
       margin-bottom: 18px;
-      overflow-y: auto;
+      overflow-y: hidden;
 
-      .searchCardInfo {
+      .searchCardHighbusInfo {
         border: 3px solid #c0a7c4;
         height: 65px;
         margin-top: 10px;
@@ -472,107 +461,5 @@ export default {
       font-size: 12px;
     }
   }
-}
-.searchRouter {
-  width: 23.5%;
-  height: calc(100vh - 54px);
-
-  .searchRouterTabs {
-    cursor: pointer;
-    height: 41px;
-    font-size: 14px;
-    // margin-left: 10px;
-    background: #443b68;
-    .bgTab {
-      color: #c0a7c4;
-    }
-  }
-  .activeSearchTab {
-    padding-bottom: 12px;
-    color: #fff !important;
-    border-bottom: 3px solid #fff;
-  }
-  .searchRouterPanel {
-    // margin-left: 10px;
-    background-color: rgba(22, 25, 51, 0.81);
-    height: calc(100vh - 54px - 41px);
-    .busStyleImgHalfUp {
-      width: 44px;
-      height: 31px;
-      background: #3b236c;
-      border-radius: 10px 10px 0 0;
-      font-size: 12px;
-      color: #fff;
-    }
-    .busStyleImgHalfBottom {
-      width: 44px;
-      height: 31px;
-      background: #fff;
-      border-radius: 0 0 10px 10px;
-      .cube {
-        width: 23px;
-        height: 12px;
-        background: #9cd7ea;
-      }
-    }
-    .searchLine {
-      position: relative;
-      .searchLineContent {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 30%;
-        border-left: 3px solid #c0a7c4;
-        z-index: 10;
-      }
-      .circleStationIcon {
-        position: absolute;
-        top: 30px;
-        left: -12px;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #c0a7c4;
-        border-radius: 50%;
-        background: #000;
-        span {
-          color: #fff;
-          font-size: 6px;
-          display: flex;
-          justify-content: center;
-          margin-top: 2px;
-        }
-      }
-      .circleBusIcon {
-        // position: absolute;
-        margin-top: 30px;
-        margin-left: 5px;
-      }
-    }
-  }
-}
-.mapCube {
-  margin-left: 18px;
-  width: calc(53vw - 68px);
-  height: calc(100vh - 55px);
-  background: #fff;
-}
-.mapCubeHeight {
-  width: calc(53vw - 68px);
-  height: calc(100vh - 55px);
-}
-.stopTextStyle {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 1.2px;
-}
-.stopBusNum {
-  color: #fff;
-  font-size: 6px;
-}
-.badgeBusStopInfo {
-  color: #3b236c;
-  font-weight: 600;
 }
 </style>

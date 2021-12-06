@@ -2,8 +2,8 @@
   <div class="gradualBg">
     <NavHeader />
     <!--  -->
-    <div class="d-flex" :style="homeBg">
-      <div class="searchBusNum card">
+    <div class="row" :style="homeBg">
+      <div class="searchBusNum card col-6 col-md-3">
         <div class="searchBusNumDiv">
           <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
           <!--  -->
@@ -13,6 +13,7 @@
                 class="col-6 bgTab ellipsis"
                 :class="{ searchActive: activeSearch === 'all' }"
                 @click="searchTaiwanFn()"
+                style="font-size: 16px"
               >
                 全台搜索
               </div>
@@ -20,6 +21,7 @@
                 class="col-6 bgTab ellipsis"
                 :class="{ searchActive: activeSearch === 'city' }"
                 @click="citySearchFn()"
+                style="font-size: 16px"
               >
                 縣市搜索
               </div>
@@ -131,11 +133,12 @@
           <img :src="busImage" />
         </div>
       </div>
-      <div class="searchRouter">
+      <div class="searchRouter col-6 col-md-3">
         <div class="searchRouterTabs">
           <div class="container row" v-if="cityBusTabIf">
             <div
-              class="col-6 bgTab mt-2 ellipsis"
+              class="col-6 bgTab pt-2 ellipsis"
+              style="font-size: 14px"
               :class="{ activeSearchTab: activeLine === endStopNameZh }"
               @click="
                 activeLine = endStopNameZh;
@@ -146,7 +149,8 @@
               往{{ endStopNameZh }}
             </div>
             <div
-              class="col-6 mt-2 bgTab ellipsis"
+              style="font-size: 14px"
+              class="col-6 pt-2 bgTab ellipsis"
               :class="{ activeSearchTab: activeLine === startStopNameZh }"
               @click="
                 activeLine = startStopNameZh;
@@ -214,7 +218,7 @@
           </div>
         </div>
       </div>
-      <div class="mapCube">
+      <div class="mapCube col-md-6 col-12 px-0">
         <l-map
           ref="myMap"
           :zoom="zoom"
@@ -565,208 +569,5 @@ export default {
 };
 </script>
 <style lang="scss">
-.gradualBg {
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-.busImgHalfStyle {
-  margin-top: -15px;
-  margin-left: -300px;
-}
-.searchBusNum {
-  margin-top: 10px;
-  margin-left: 24px;
-  margin-right: 24px;
-  width: 23.5%;
-  height: 76vh;
-  background: #161933 81%;
-
-  .searchBusNumDiv {
-    margin-top: 12px;
-    margin-left: 20px;
-    margin-right: 20px;
-    cursor: pointer;
-    .searchActive {
-      padding-bottom: 12px;
-      color: #fff !important;
-      border-bottom: 3px solid #fff;
-    }
-    .searchBusNumInput {
-      width: 100%;
-      border: 3px solid #c0a7c4;
-      border-radius: 25px;
-      padding-left: 10px;
-      padding-right: 10px;
-      background: #161933 81%;
-      color: #fff;
-      margin-bottom: 12px;
-    }
-    .searchCityBusNumInput {
-      width: 50%;
-      border: 3px solid #c0a7c4;
-      border-radius: 25px;
-      padding-left: 10px;
-      padding-right: 10px;
-      background: #161933 81%;
-      color: #fff;
-      margin-bottom: 12px;
-    }
-    .searchIncluidInfo {
-      background: rgba(102, 86, 130, 0.47);
-      height: calc(74vh - 216px - 12px - 51px);
-      margin-bottom: 18px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      .searchCardInfo {
-        border: 3px solid #c0a7c4;
-        //
-        margin-top: 10px;
-        background: rgba(102, 86, 130, 0.47);
-        color: #c0a7c4;
-        cursor: pointer;
-      }
-      .searchPosition {
-        height: 60px;
-        position: relative;
-      }
-      // .searchPositionText {
-      //   position: absolute;
-      //   bottom: 0;
-      //   position: relative;
-      // }
-      .searchPositionTextRange {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-      }
-      .searchPositionTextCity {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-      }
-    }
-    .btnAll {
-      height: 216px;
-    }
-    .btnSearch {
-      color: #fff;
-      border: 3px solid #665682;
-      background: #161933 81%;
-      font-weight: 600;
-      border-radius: 5px;
-      width: 18%;
-      // width: 50px;
-      height: 34px;
-      &:hover {
-        color: #161933;
-        background: #665682;
-      }
-    }
-    .btnSearchRegular {
-      font-size: 12px;
-    }
-  }
-}
-.searchRouter {
-  width: 23.5%;
-  height: calc(100vh - 54px);
-
-  .searchRouterTabs {
-    cursor: pointer;
-    height: 41px;
-    font-size: 14px;
-    // margin-left: 10px;
-    background: #443b68;
-    .bgTab {
-      color: #c0a7c4;
-    }
-  }
-  .activeSearchTab {
-    padding-bottom: 12px;
-    color: #fff !important;
-    border-bottom: 3px solid #fff;
-  }
-  .searchRouterPanel {
-    // margin-left: 10px;
-    background-color: rgba(22, 25, 51, 0.81);
-    height: calc(100vh - 54px - 41px);
-    .busStyleImgHalfUp {
-      width: 44px;
-      height: 31px;
-      background: #3b236c;
-      border-radius: 10px 10px 0 0;
-      font-size: 12px;
-      color: #fff;
-    }
-    .busStyleImgHalfBottom {
-      width: 44px;
-      height: 31px;
-      background: #fff;
-      border-radius: 0 0 10px 10px;
-      .cube {
-        width: 23px;
-        height: 12px;
-        background: #9cd7ea;
-      }
-    }
-    .searchLine {
-      position: relative;
-      .searchLineContent {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 30%;
-        border-left: 3px solid #c0a7c4;
-        z-index: 10;
-      }
-      .circleStationIcon {
-        position: absolute;
-        top: 30px;
-        left: -12px;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #c0a7c4;
-        border-radius: 50%;
-        background: #000;
-        span {
-          color: #fff;
-          font-size: 6px;
-          display: flex;
-          justify-content: center;
-          margin-top: 2px;
-        }
-      }
-      .circleBusIcon {
-        // position: absolute;
-        margin-top: 30px;
-        margin-left: 5px;
-      }
-    }
-  }
-}
-.mapCube {
-  margin-left: 18px;
-  width: calc(53vw - 68px);
-  height: calc(100vh - 55px);
-  background: #fff;
-}
-.mapCubeHeight {
-  width: calc(53vw - 68px);
-  height: calc(100vh - 55px);
-}
-.stopTextStyle {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 1.2px;
-}
-.stopBusNum {
-  color: #fff;
-  font-size: 6px;
-}
-.badgeBusStopInfo {
-  color: #3b236c;
-  font-weight: 600;
-}
+@import "@/assets/scss/citybus.scss";
 </style>
