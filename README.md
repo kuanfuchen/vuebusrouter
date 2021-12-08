@@ -2,7 +2,13 @@
 
 ## Project setup
 ```
-npm install
+Vue 3
+axios
+Vue-axios
+bootstrap 5
+jssha
+leaflet
+Fontawesome
 ```
 
 ### Compiles and hot-reloads for development
